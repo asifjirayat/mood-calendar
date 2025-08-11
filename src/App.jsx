@@ -35,15 +35,24 @@ export default function App() {
     "😡": 1,
   };
 
-  // Function to calculate average
+  // Function to calculate average and mood score
   const calculateAverage = (moods) => {
     const totalScore = Object.values(moods).reduce(
       (sum, emoji) => sum + emojiScores[emoji],
       0
     );
     const count = Object.keys(moods).length;
-    return count > 0 ? (totalScore / count).toFixed(1) : "N/A";
+    if (count === 0) return { score: 0, emoji: "N/A" };
+    const averageScore = Math.round(totalScore / count);
+    const averageEmoji =
+      Object.keys(emojiScores).find(
+        (emoji) => emojiScores[emoji] === averageScore
+      ) || "😐";
+    return { score: averageScore, emoji: averageEmoji };
   };
+
+  // Function calculate average mood score
+  const { score: averageScore, emoji: averageEmoji } = calculateAverage(moods);
 
   // Function to get background color based on score
   const getBackgroundColor = (score) => {
@@ -51,9 +60,6 @@ export default function App() {
     if (score <= 3) return "bg-yellow-300";
     return "bg-red-300";
   };
-
-  // Calculate Avg mood
-  const averageMood = calculateAverage(moods);
 
   function handleClick(day) {
     const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(
@@ -105,7 +111,7 @@ export default function App() {
       <div className="grid grid-cols-7 gap-2">
         {/* Display average mood */}
         <div className="col-span-7 font-mono text-lg text-center">
-          Average Mood: {averageMood}
+          Average Mood: {averageEmoji} ({averageScore}/5)
         </div>
         {/* Month and year display */}
         <div className="col-span-7 font-mono text-lg text-center">
