@@ -25,6 +25,35 @@ export default function App() {
   // List of emojis to cycle through
   const emojis = ["😊", "😐", "😢", "😡", "😎"];
 
+  // Map of emoji to score
+  const emojiScores = {
+    "😊": 5,
+    "😎": 4,
+    "😐": 3,
+    "😢": 2,
+    "😡": 1,
+  };
+
+  // Function to calculate average
+  const calculateAverage = (moods) => {
+    const totalScore = Object.values(moods).reduce(
+      (sum, emoji) => sum + emojiScores[emoji],
+      0
+    );
+    const count = Object.keys(moods).length;
+    return count > 0 ? (totalScore / count).toFixed(1) : "N/A";
+  };
+
+  // Function to get background color based on score
+  const getBackgroundColor = (score) => {
+    if (score >= 4) return "bg-green-300";
+    if (score <= 3) return "bg-yellow-300";
+    return "bg-red-300";
+  };
+
+  // Calculate Avg mood
+  const averageMood = calculateAverage(moods);
+
   function handleClick(day) {
     const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(
       day
@@ -43,41 +72,57 @@ export default function App() {
   }
 
   return (
-    <div className="grid grid-cols-7 gap-1">
-      {/* Weekday headers */}
-      <div className="font-mono text-sm">Sun</div>
-      <div className="font-mono text-sm">Mon</div>
-      <div className="font-mono text-sm">Tue</div>
-      <div className="font-mono text-sm">Wed</div>
-      <div className="font-mono text-sm">Thu</div>
-      <div className="font-mono text-sm">Fri</div>
-      <div className="font-mono text-sm">Sat</div>
+    <div className="max-w-2xl mx-auto p-4 ">
+      <div className="grid grid-cols-7 gap-2">
+        {/* Display average mood */}
+        <div className="col-span-7 font-mono text-lg text-center">
+          Average Mood: {averageMood}
+        </div>
+        {/* Weekday headers */}
+        <div className="font-mono text-lg">Sun</div>
+        <div className="font-mono text-lg">Mon</div>
+        <div className="font-mono text-lg">Tue</div>
+        <div className="font-mono text-lg">Wed</div>
+        <div className="font-mono text-lg">Thu</div>
+        <div className="font-mono text-lg">Fri</div>
+        <div className="font-mono text-lg">Sat</div>
 
-      {/* Day buttons */}
-      {days.map((day, index) => (
-        <button
-          key={index}
-          className={`font-mono text-sm ${
-            day ? "bg-gray-200" : "bg-transparent"
-          }`}
-          onClick={() => day && handleClick(day)}
-        >
-          {day ? (
-            <>
-              {day}
-              {
-                moods[
-                  `${year}-${String(month + 1).padStart(2, "0")}-${String(
-                    day
-                  ).padStart(2, "0")}`
-                ]
-              }
-            </>
-          ) : (
-            ""
-          )}
-        </button>
-      ))}
+        {/* Day buttons */}
+        {days.map((day, index) => (
+          <button
+            key={index}
+            className={`font-mono text-lg p-2 rounded ${
+              day
+                ? getBackgroundColor(
+                    emojiScores[
+                      moods[
+                        `${year}-${String(month + 1).padStart(2, "0")}-${String(
+                          day
+                        ).padStart(2, "0")}`
+                      ]
+                    ]
+                  )
+                : "bg-transparent"
+            }`}
+            onClick={() => day && handleClick(day)}
+          >
+            {day ? (
+              <>
+                {day}
+                {
+                  moods[
+                    `${year}-${String(month + 1).padStart(2, "0")}-${String(
+                      day
+                    ).padStart(2, "0")}`
+                  ]
+                }
+              </>
+            ) : (
+              ""
+            )}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
