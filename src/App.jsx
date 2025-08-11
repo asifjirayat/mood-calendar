@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 export default function App() {
-  const year = 2025;
-  const month = 7; // 0-Index based
+  // Store current month and year in state
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth()); // 0-Index based
 
   // Calculate number of days in a month
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   // 0 = Sunday, .... 6 = Saturday
-  const firstDayOfWeek = new Date(year, month, 1).getDay();
+  const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
 
   // Array with days
   const days = Array.from({ length: daysInMonth + firstDayOfWeek }, (_, i) => {
@@ -55,9 +56,10 @@ export default function App() {
   const averageMood = calculateAverage(moods);
 
   function handleClick(day) {
-    const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-      day
-    ).padStart(2, "0")}`;
+    const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(
+      2,
+      "0"
+    )}-${String(day).padStart(2, "0")}`;
     const currentEmoji = moods[dateKey] || emojis[0];
     const nextIndex = (emojis.indexOf(currentEmoji) + 1) % emojis.length;
 
@@ -71,12 +73,48 @@ export default function App() {
     });
   }
 
+  // Function to handle previous month navigation
+  function handlePrevMonth() {
+    if (currentMonth === 0) {
+      setCurrentYear(currentYear - 1);
+      setCurrentMonth(11);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  }
+
+  // Function to handle next month navigation
+  function handleNextMonth() {
+    if (currentMonth === 11) {
+      setCurrentYear(currentYear + 1);
+      setCurrentMonth(0);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-4 ">
       <div className="grid grid-cols-7 gap-2">
         {/* Display average mood */}
         <div className="col-span-7 font-mono text-lg text-center">
           Average Mood: {averageMood}
+        </div>
+        {/* Month and year display */}
+        <div className="col-span-7 font-mono text-lg text-center">
+          {new Date(currentYear, currentMonth).toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          })}
+        </div>
+        {/* Navigation Buttons */}
+        <div className="col-span-7 flex justify-center">
+          <button onClick={handlePrevMonth} className="font-mono text-lg p-2">
+            &lt;
+          </button>
+          <button onClick={handleNextMonth} className="font-mono text-lg p-2">
+            &gt;
+          </button>
         </div>
         {/* Weekday headers */}
         <div className="font-mono text-lg">Sun</div>
@@ -96,9 +134,10 @@ export default function App() {
                 ? getBackgroundColor(
                     emojiScores[
                       moods[
-                        `${year}-${String(month + 1).padStart(2, "0")}-${String(
-                          day
-                        ).padStart(2, "0")}`
+                        `${currentYear}-${String(currentMonth + 1).padStart(
+                          2,
+                          "0"
+                        )}-${String(day).padStart(2, "0")}`
                       ]
                     ]
                   )
@@ -111,9 +150,10 @@ export default function App() {
                 {day}
                 {
                   moods[
-                    `${year}-${String(month + 1).padStart(2, "0")}-${String(
-                      day
-                    ).padStart(2, "0")}`
+                    `${currentYear}-${String(currentMonth + 1).padStart(
+                      2,
+                      "0"
+                    )}-${String(day).padStart(2, "0")}`
                   ]
                 }
               </>
