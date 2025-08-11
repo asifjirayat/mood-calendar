@@ -179,6 +179,18 @@ export default function App() {
           </button>
         ))}
       </div>
+
+      {/* Footer */}
+      <div className="mt-4 text-center text-gray-400">
+        <a
+          href="https://github.com/asifjirayat"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-sm hover:underline"
+        >
+          Github: @asifjirayat
+        </a>
+      </div>
     </div>
   );
 }
