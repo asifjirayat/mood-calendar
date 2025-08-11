@@ -93,6 +93,13 @@ export default function App() {
     }
   }
 
+  // Function to handle today button
+  function handleToday() {
+    const today = new Date();
+    setCurrentYear(today.getFullYear());
+    setCurrentMonth(today.getMonth());
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-4 ">
       <div className="grid grid-cols-7 gap-2">
@@ -111,6 +118,9 @@ export default function App() {
         <div className="col-span-7 flex justify-center">
           <button onClick={handlePrevMonth} className="font-mono text-lg p-2">
             &lt;
+          </button>
+          <button onClick={handleToday} className="font-mono text-lg p-2">
+            Today
           </button>
           <button onClick={handleNextMonth} className="font-mono text-lg p-2">
             &gt;
